@@ -4,6 +4,8 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ChartHistory from './ChartHistory';
+import dayjs from 'dayjs';
 
 const MarketPrice = ({ price, lastUpdate, onMarketUpdate }) => {
     const REFRESH_TIME = 30000;
@@ -18,9 +20,10 @@ const MarketPrice = ({ price, lastUpdate, onMarketUpdate }) => {
             .then(function (response) {
                 // handle success
                 console.log(response);
-                onMarketUpdate(response.data);
                 let newMarketPrice = response.data.data.market_data.price_usd;
-                setMarketHistory(marketHistory => [...marketHistory, newMarketPrice]);
+                let lastUpdateDateTime = dayjs(response.data.status.timestamp);
+                onMarketUpdate(newMarketPrice, lastUpdateDateTime);
+                setMarketHistory(marketHistory => [...marketHistory, {name: lastUpdateDateTime.format('HH:mm'), value: newMarketPrice}]);
             })
             .catch(function (error) {
                 // handle error
@@ -61,6 +64,7 @@ const MarketPrice = ({ price, lastUpdate, onMarketUpdate }) => {
                 <h2>Market Value: $ {price}</h2>
                 <h4>Last update: {lastUpdate}</h4>
                 <Button onClick={ () => {isStopped ? start() :  stop()}}>{isStopped ? 'START' : 'STOP'} REFRESH</Button>
+                <ChartHistory dataArray={marketHistory}/>
             </Container>
         </div>
     )

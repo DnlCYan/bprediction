@@ -36,10 +36,9 @@ const App = () => {
     setCheckPrice(false);
   }
 
-  const onMarketUpdate = (data) => {
-    let newMarketPrice = data.data.market_data.price_usd;
+  const onMarketUpdate = (newMarketPrice, lastUpdateDateTime) => {
     setMarketPrice(newMarketPrice);
-    setLastUpdateDateTime(dayjs(data.status.timestamp));
+    setLastUpdateDateTime(lastUpdateDateTime);
 
     if (checkPriceRef.current) {
       if (predictRef.current.value === "UP") {
