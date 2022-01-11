@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Header from './components/Header'
 import MarketPrice from './components/MarketPrice'
 import Options from './components/Options'
@@ -9,52 +9,109 @@ const App = () => {
   const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
   const TIME_LIMIT = 60;
 
-  const [marketHistory, setMarketHistory] = useState([]);
+  
   const [marketPrice, setMarketPrice] = useState(0);
   const [lastUpdateDateTime, setLastUpdateDateTime] = useState("");
-  const [predictValue, setPredictValue] = useState("");
-  const [predictPriceValue, setPredictPriceValue] = useState("");
-  const [predictDateTime, setPredictDateTime] = useState("");
-  const [minuteLaps, setMinuteLaps] = useState(60);
+  const [predict, setPredict] = useState({
+    value: '',
+    currentPrice: 0,
+    priceDatetime: ''
+  });
+  const predictRef = useRef(predict);
+  predictRef.current = predict;
+  const [minuteLaps, setMinuteLaps] = useState(0);
+  const minuteLapsRef = useRef(minuteLaps);
+  minuteLapsRef.current = minuteLaps;
   const [locked, setLocked] = useState(false);
   const [checkPrice, setCheckPrice] = useState(false);
+  const checkPriceRef = useRef(checkPrice);
+  checkPriceRef.current = checkPrice;
+
+  const [timerId, setTimerId] = useState(0);
 
   const onPredict = (value) => {
     setLocked(true);
-    setPredictValue(value);
-    setPredictPriceValue(marketPrice);
-    setPredictDateTime(dayjs());
+    setPredict({ value: value, currentPrice: marketPrice, priceDatetime: dayjs() });
     setMinuteLaps(TIME_LIMIT);
     setCheckPrice(false);
   }
 
-  let onMarketUpdate = (data) => {
-    setMarketPrice(data.data.market_data.price_usd);
-    setMarketHistory(...marketHistory, marketPrice);
+  const onMarketUpdate = (data) => {
+    let newMarketPrice = data.data.market_data.price_usd;
+    setMarketPrice(newMarketPrice);
     setLastUpdateDateTime(dayjs(data.status.timestamp));
-    if (checkPrice) {
-      console.log(marketHistory);
-      if (predictValue === "UP") {
-        predictPriceValue < marketPrice ? win() : lose();
-      } else if (predictValue === "DOWN") {
-        predictPriceValue > marketPrice ? win() : lose();
+
+    if (checkPriceRef.current) {
+      if (predictRef.current.value === "UP") {
+        predictRef.current.currentPrice < newMarketPrice ? win() : lose();
+      } else if (predict.value === "DOWN") {
+        predictRef.current.currentPrice > newMarketPrice ? win() : lose();
       }
       setLocked(false);
+      setCheckPrice(false);
     }
   }
 
-  useEffect(() => {
-    const lapTime = () => {
-      setMinuteLaps(minuteLaps - 1);
-      if (minuteLaps <= 0) {
-        if (predictDateTime - lastUpdateDateTime > TIME_LIMIT) {
-          setCheckPrice(true);
-        }
-      }
-    };
+  const lapTime = () => {
+    // console.log(this.timerId+" lap1 " +minuteLaps);
+    // let n = minuteLaps - 1;
+    // console.log(timerId + " lap2 " +n);
+    // setMinuteLaps(n);
+    minuteLapsRef.current--;
+    setMinuteLaps(minuteLapsRef.current);
+    // setMinuteLaps(prevMinuteLaps => prevMinuteLaps - 1);
 
-    setInterval(lapTime, 1000);
-  }, [predictValue]);
+    // console.log(timerId + " lap2 " +(minuteLaps-1));
+    if (minuteLapsRef.current <= 0) {
+      // if (predict.priceDatetime - lastUpdateDateTime > TIME_LIMIT) {
+      setCheckPrice(true);
+      // clearInterval(timerId);
+      // setTimerId(0);
+      // }
+    }
+  };
+
+  useEffect(() => {
+
+    // if(timerId!=0){
+    //   clearInterval(timerId);
+    //   setTimerId(0);
+    // }
+
+    console.log(timerId + " lap2 " + minuteLaps);
+    if (minuteLaps <= 0) {
+      // console.log(predict.priceDatetime - lastUpdateDateTime);
+      // if (predict.priceDatetime - lastUpdateDateTime > TIME_LIMIT*1000) {
+      locked && setCheckPrice(true);
+      // clearInterval(timeoutId);
+      // clearInterval(timerId);
+      // setTimerId(0);
+      // }
+      return;
+    }
+
+    // if(minuteLaps >0){
+    //   clearInterval(timerId);
+    //   // setTimerId(0);
+    // }
+
+    // const intervalId = minuteLaps > 0 && setTimerId(setInterval(lapTime, 1000));
+    // const intervalId = minuteLaps > 0 && setTimerId(setInterval(()=>{
+    //     setMinuteLaps(prevMinuteLaps => prevMinuteLaps - 1);
+    //   }, 1000));
+    // setTimerId(intervalId);
+    const timeoutId = minuteLaps > 0 && setTimeout(() => {
+      setMinuteLaps(prevMinuteLaps => prevMinuteLaps - 1);
+    }, 1000);
+    console.log(timeoutId + " lap2 " + minuteLaps);
+
+    return () => {
+      // clearInterval(intervalId);
+      // console.log(timeoutId+" close");
+      clearInterval(timeoutId);
+      // setTimerId(0);
+    }
+  }, [minuteLaps]);
 
   const win = () => {
     console.log("win");
@@ -68,10 +125,11 @@ const App = () => {
     <div className="App">
       <Header />
       <MarketPrice price={marketPrice} lastUpdate={lastUpdateDateTime && lastUpdateDateTime.format(DATE_FORMAT)} onMarketUpdate={onMarketUpdate} />
-      <Options locked={locked} predict={predictValue} onPredict={onPredict} time={predictDateTime && setMinuteLaps(minuteLaps - 1)} />
+      <Options locked={locked} checkPrice={checkPrice} predict={predict.value} onPredict={onPredict} time={predict.priceDatetime && minuteLaps} />
     </div>
   );
 }
 
 export default App;
+
 

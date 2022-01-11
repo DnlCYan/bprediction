@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useTimer } from 'react-timer-hook';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
@@ -12,16 +11,19 @@ const MarketPrice = ({ price, lastUpdate, onMarketUpdate }) => {
     const [isStopped, setIsStopped] = useState(true);
     const [refreshId, setRefreshId] = useState(0);
 
+    const [marketHistory, setMarketHistory] = useState([]);
+
     const getPrice = () => {
         axios.get('https://data.messari.io/api/v1/assets/btc/metrics', { "headers": { "x-messari-api-key": "53074b33-87c6-4bbf-b72a-3326910b72e4" } })
             .then(function (response) {
                 // handle success
                 console.log(response);
                 onMarketUpdate(response.data);
+                let newMarketPrice = response.data.data.market_data.price_usd;
+                setMarketHistory(marketHistory => [...marketHistory, newMarketPrice]);
             })
             .catch(function (error) {
                 // handle error
-                console.log("RE" + refreshId);
                 console.log(error);
 
                 clearInterval(refreshId);
