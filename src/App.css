@@ -7,6 +7,8 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.4;
+  text-align: center;
+  text-align: -webkit-center;
 }
 
 a {
@@ -29,4 +31,11 @@ a {
 
 .btn:hover {
   background: #666;
+}
+
+.options .container{
+  margin: 10px;
+  border: solid;
+  padding: 10px;
+  width: auto;
 }

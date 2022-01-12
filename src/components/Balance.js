@@ -1,6 +1,9 @@
-const Balance = () => {
+const Balance = ({points}) => {
     return (
-        <div></div>
+        <div>
+          <h3>Your points: {points}</h3>
+          <h4>If you what to save our points please</h4>
+        </div>
       )
 }
 

@@ -21,7 +21,7 @@ const ChartHistory = (dataArray: any) => {
           <XAxis dataKey="name"  interval="preserveEnd" />
           <YAxis allowDataOverflow interval="preserveEnd" domain={['dataMin - 10', 'dataMax + 10']} />
           <Tooltip />
-          <Legend />
+          {/* <Legend /> */}
           {/* <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} /> */}
           <Line type="monotone" dataKey="value" stroke="#82ca9d" />
         </LineChart>

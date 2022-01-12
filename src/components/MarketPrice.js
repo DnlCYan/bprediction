@@ -7,10 +7,10 @@ import Col from 'react-bootstrap/Col';
 import ChartHistory from './ChartHistory';
 import dayjs from 'dayjs';
 
-const MarketPrice = ({ price, lastUpdate, onMarketUpdate }) => {
+const MarketPrice = ({ price, lastUpdate, previousPrice, onMarketUpdate }) => {
     const REFRESH_TIME = 30000;
 
-    const [isStopped, setIsStopped] = useState(true);
+    const [isStopped, setIsStopped] = useState(false);
     const [refreshId, setRefreshId] = useState(0);
 
     const [marketHistory, setMarketHistory] = useState([]);
@@ -23,7 +23,7 @@ const MarketPrice = ({ price, lastUpdate, onMarketUpdate }) => {
                 let newMarketPrice = response.data.data.market_data.price_usd;
                 let lastUpdateDateTime = dayjs(response.data.status.timestamp);
                 onMarketUpdate(newMarketPrice, lastUpdateDateTime);
-                setMarketHistory(marketHistory => [...marketHistory, {name: lastUpdateDateTime.format('HH:mm'), value: newMarketPrice}]);
+                setMarketHistory(marketHistory => [...marketHistory, { name: lastUpdateDateTime.format('HH:mm'), value: newMarketPrice }]);
             })
             .catch(function (error) {
                 // handle error
@@ -61,12 +61,30 @@ const MarketPrice = ({ price, lastUpdate, onMarketUpdate }) => {
     return (
         <div className="market-price">
             <Container>
-                <h2>Market Value: $ {price}</h2>
+                <h2>Market Value: $ {price} {price > previousPrice ? <EvolutionSymbolUp/> : price < previousPrice && <EvolutionSymbolDown/> } </h2>
+                <h5>Previous Value: $ {previousPrice}</h5>
                 <h4>Last update: {lastUpdate}</h4>
-                <Button onClick={ () => {isStopped ? start() :  stop()}}>{isStopped ? 'START' : 'STOP'} REFRESH</Button>
-                <ChartHistory dataArray={marketHistory}/>
+                <Button onClick={() => { isStopped ? start() : stop() }}>{isStopped ? 'START' : 'STOP'} REFRESH</Button>
+                <ChartHistory dataArray={marketHistory} />
             </Container>
         </div>
+    )
+}
+
+
+const EvolutionSymbolUp = () => {
+    return (
+        <span role="img" aria-label="up">
+            🔼
+        </span>
+    )
+}
+
+const EvolutionSymbolDown = () => {
+    return (
+        <span role="img" aria-label="up">
+            🔻
+        </span>
     )
 }
 
