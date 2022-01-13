@@ -30,6 +30,7 @@ const App = () => {
   const [checkPrice, setCheckPrice] = useState(false);
   const checkPriceRef = useRef(checkPrice);
   checkPriceRef.current = checkPrice;
+  const [resultMsg, setResultMsg] = useState('');
 
   const [points, setPoints] = useState(0);
   const pointsRef = useRef(points);
@@ -42,6 +43,7 @@ const App = () => {
     setPredict({ value: value, currentPrice: marketPrice, priceDatetime: dayjs() });
     setMinuteLaps(TIME_LIMIT);
     setCheckPrice(false);
+    setResultMsg('');
   }
 
   const onMarketUpdate = (newMarketPrice, lastUpdateDateTime) => {
@@ -52,15 +54,22 @@ const App = () => {
     if (checkPriceRef.current) {
       if (predictRef.current.value === "UP") {
         predictRef.current.currentPrice < newMarketPrice ? win() : lose();
-      } else if (predict.value === "DOWN") {
+      } else if (predictRef.current.value === "DOWN") {
         predictRef.current.currentPrice > newMarketPrice ? win() : lose();
       } else {
         console.log("error: missing prediction: " + predictRef.current);
       }
-      setLocked(false);
+
       setCheckPrice(false);
     }
   }
+
+  const onRetry = () => {
+    setLocked(false);
+    setCheckPrice(false);
+    setPredict({ value: '', currentPrice: 0, priceDatetime: '' });
+  }
+
 
   useEffect(() => {
 
@@ -78,20 +87,20 @@ const App = () => {
   }, [minuteLaps]);
 
   const win = () => {
-    console.log("win");
     setPoints(points => points + 1);
+    setResultMsg("You win!");
   }
 
   const lose = () => {
-    console.log("lose");
     setPoints(points => points - 1);
+    setResultMsg("You lose!");
   }
 
   return (
     <div className="App">
       <Header />
       <MarketPrice price={marketPrice} lastUpdate={lastUpdateDateTime && lastUpdateDateTime.format(DATE_FORMAT)} previousPrice={previousMarketPrice} onMarketUpdate={onMarketUpdate} />
-      <Options locked={locked} checkPrice={checkPrice} predict={predict.value} predictPrice={predict.currentPrice} onPredict={onPredict} time={predict.priceDatetime && minuteLaps} />
+      <Options locked={locked} checkPrice={checkPrice} predict={predict.value} predictPrice={predict.currentPrice} resultMsg={resultMsg} onPredict={onPredict} onRetry={onRetry} time={predict.priceDatetime && minuteLaps} />
       <Balance points={points} />
     </div>
   );

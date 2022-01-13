@@ -3,11 +3,11 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-const Options = ({ locked, checkPrice, predict, predictPrice, onPredict, time }) => {
+const Options = ({ locked, checkPrice, predict, predictPrice, resultMsg, onPredict, onRetry, time }) => {
     return (
         <div className="options">
             <Container>
-                {locked && <PredictionSelected checkPrice={checkPrice} predict={predict} predictPrice={predictPrice} time={time} />}
+                {locked && <PredictionSelected checkPrice={checkPrice} predict={predict} predictPrice={predictPrice} resultMsg={resultMsg} onRetry={onRetry} time={time} />}
                 {!locked && <PredictionOptions onPredict={onPredict} />}
             </Container>
         </div>
@@ -15,11 +15,13 @@ const Options = ({ locked, checkPrice, predict, predictPrice, onPredict, time })
 }
 
 
-const PredictionSelected = ({ checkPrice, predict, predictPrice, time }) => {
+const PredictionSelected = ({ checkPrice, predict, predictPrice, resultMsg, onRetry, time }) => {
     return (
         <div className="prediction-selected">
             <h3>Predict Bitcoin value will go {predict} from {predictPrice} in {time}</h3>
             {checkPrice && <h4>Checking next price</h4>}
+            {resultMsg && <h4>{resultMsg}</h4>}
+            {!checkPrice && resultMsg && <Button as={Col} variant="primary" onClick={() => onRetry()}>Retry</Button>}
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
@@ -11,7 +11,7 @@ const MarketPrice = ({ price, lastUpdate, previousPrice, onMarketUpdate }) => {
     const REFRESH_TIME = 30000;
 
     const [isStopped, setIsStopped] = useState(false);
-    const [refreshId, setRefreshId] = useState(0);
+    const refreshIdRef = useRef(0);
 
     const [marketHistory, setMarketHistory] = useState([]);
 
@@ -29,7 +29,8 @@ const MarketPrice = ({ price, lastUpdate, previousPrice, onMarketUpdate }) => {
                 // handle error
                 console.log(error);
 
-                clearInterval(refreshId);
+                clearInterval(refreshIdRef.current);
+                refreshIdRef.current = 0;
             })
             .then(function () {
                 // always executed
@@ -40,22 +41,23 @@ const MarketPrice = ({ price, lastUpdate, previousPrice, onMarketUpdate }) => {
 
         if (!isStopped) {
             getPrice();
-            setRefreshId(setInterval(getPrice, REFRESH_TIME));
+            refreshIdRef.current = setInterval(getPrice, REFRESH_TIME);
         }
         return () => {
-            clearInterval(refreshId);
+            clearInterval(refreshIdRef.current);
         }
     }, []);
 
     const start = () => {
         setIsStopped(false);
         getPrice();
-        setRefreshId(setInterval(getPrice, REFRESH_TIME));
+        refreshIdRef.current = setInterval(getPrice, REFRESH_TIME);
     }
 
     const stop = () => {
         setIsStopped(true);
-        clearInterval(refreshId);
+        clearInterval(refreshIdRef.current);
+        refreshIdRef.current = 0;
     }
 
     return (
