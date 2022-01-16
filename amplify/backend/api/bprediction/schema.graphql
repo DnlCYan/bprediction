@@ -1,0 +1,7 @@
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  publicAddress: String!
+  nonce: String
+  aliasname: String
+}
+ 

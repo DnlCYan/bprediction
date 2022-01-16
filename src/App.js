@@ -6,6 +6,9 @@ import Balance from './components/Balance'
 import dayjs from 'dayjs';
 import './App.css';
 
+import Amplify from '@aws-amplify/core';
+import config from './aws-exports';
+
 const App = () => {
   const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
   const TIME_LIMIT = 60;
@@ -45,6 +48,7 @@ const App = () => {
     setCheckPrice(false);
     setResultMsg('');
   }
+  Amplify.configure(config);
 
   const onMarketUpdate = (newMarketPrice, lastUpdateDateTime) => {
     setPreviousMarketPrice(marketPriceRef.current);
