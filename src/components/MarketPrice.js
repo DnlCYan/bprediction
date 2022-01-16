@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import ChartHistory from './ChartHistory';
 import dayjs from 'dayjs';
 
