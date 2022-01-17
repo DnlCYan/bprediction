@@ -18,7 +18,6 @@ const App = () => {
   const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
   const TIME_LIMIT = 60;
 
-
   const [marketPrice, setMarketPrice] = useState(0);
   const marketPriceRef = useRef(marketPrice);
   marketPriceRef.current = marketPrice;
@@ -44,20 +43,7 @@ const App = () => {
   const pointsRef = useRef(points);
   pointsRef.current = points;
 
-
-  const [timerId, setTimerId] = useState(0);
-
   Amplify.configure(config);
-  
-  const onPredict = (value) => {
-    setLocked(true);
-    setPredict({ value: value, currentPrice: marketPrice, priceDatetime: dayjs() });
-    setMinuteLaps(TIME_LIMIT);
-    setCheckPrice(false);
-    setResultMsg('');
-  }
-  Amplify.configure(config);
-
 
   // Update Bitcoin market price
   const onMarketUpdate = (newMarketPrice, lastUpdateDateTime) => {
@@ -122,12 +108,14 @@ const App = () => {
     setResultMsg("You lose!");
   }
 
+  /* Save Points at local storage */
   const POINTS_KEY = 'bprediction:points';
   useEffect(() => {
     let localPoints = window.localStorage.getItem(POINTS_KEY);
     setPoints(localPoints ?? 0);
   }, []);
 
+  /* Update changed points to local storage and AWS Datastore if logged in */
   useEffect(() => {
     localStorage.setItem(POINTS_KEY, points);
     updateUserPoints();
