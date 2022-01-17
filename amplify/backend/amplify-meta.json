@@ -1,0 +1,60 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplifyc111f9b7662e4-staging-35821-authRole",
+      "UnauthRoleArn": "arn:aws:iam::497344852007:role/amplify-amplifyc111f9b7662e4-staging-35821-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::497344852007:role/amplify-amplifyc111f9b7662e4-staging-35821-authRole",
+      "Region": "eu-west-2",
+      "DeploymentBucketName": "amplify-amplifyc111f9b7662e4-staging-35821-deployment",
+      "UnauthRoleName": "amplify-amplifyc111f9b7662e4-staging-35821-unauthRole",
+      "StackName": "amplify-amplifyc111f9b7662e4-staging-35821",
+      "StackId": "arn:aws:cloudformation:eu-west-2:497344852007:stack/amplify-amplifyc111f9b7662e4-staging-35821/0c9758e0-7425-11ec-8de1-065910ea5e26",
+      "AmplifyAppId": "dii3vgda18n64"
+    }
+  },
+  "api": {
+    "bprediction": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 30,
+              "description": "api key description"
+            }
+          },
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ]
+        },
+        "GraphQLAPIIdOutput": "giqogrpgmbhczo4nagbowwavcq",
+        "GraphQLAPIEndpointOutput": "https://w6lpbx32tzhgdm66czb7hltorm.appsync-api.eu-west-2.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-24pykfjehzdlbgiphwrxtmcd5q"
+      },
+      "lastPushTimeStamp": "2022-01-17T03:54:49.808Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplifyc111f9b7662e4-staging-35821-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apibprediction"
+      },
+      "lastPushDirHash": "xR5Knqr2dW3oHrQl1q2gqR3kdbE="
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "providerPlugin": "awscloudformation",
+      "type": "manual",
+      "output": {},
+      "lastPushTimeStamp": "2022-01-17T03:54:49.808Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplifyc111f9b7662e4-staging-35821-deployment/amplify-cfn-templates/hosting/amplifyhosting-template.json",
+        "logicalId": "hostingamplifyhosting"
+      },
+      "lastPushDirHash": "/+VZ33seFFqAr6wbtptwbINUfSA="
+    }
+  }
+}

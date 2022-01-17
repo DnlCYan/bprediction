@@ -42,3 +42,4 @@ yarn-error.log*
 # .secret-*
 # **.sample
 #amplify-do-not-edit-end
+amplify/#current-cloud-backend/api/bprediction/build

@@ -1,0 +1,13 @@
+{
+    "AppSyncApiName": "bprediction",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "S3DeploymentBucket": "amplify-amplifyc111f9b7662e4-staging-35821-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/51252617bed98689f7229d6a4372dbfe48ff5ae0"
+}
